@@ -19,21 +19,22 @@ module.exports={
 			}
 		}
 	}
-}
+};
+
 var put = function (rec,match,collection,callback){
 	collection.update(match,rec,{upsert:true}, function (err,record){
 		return callback(err);
 	});
-}
+};
 
 var matchFromArray = function (record,i){
-	matchObject = {}
+	matchObject = {};
 	for(var j =0;j<fileMap[i]["uID"].length;j++){
 		var ident1 = fileMap[i]["uID"][j];
 		matchObject[ident1]=record[ident1]
 	}
 	return matchObject;
-}
+};
 
 var core = function (fileLoc,DBI,i,callback){
 	var filestream = fs.createReadStream(fileLoc);
@@ -43,7 +44,10 @@ var core = function (fileLoc,DBI,i,callback){
 			return callback(err);
 		}
 		var collection = db.collection(fileMap[i]["cName"]);
-		var parser = parse({ columns:true});	//columns interprets first line as set of fields.
+		var parser = parse({
+		  columns: true,
+		  quote: ''
+		});	//columns interprets first line as set of fields.
 		parser.on('data',function(record){
 			parser.pause();
 			match=matchFromArray(record,i);
@@ -68,19 +72,72 @@ var core = function (fileLoc,DBI,i,callback){
 		});
 		filestream.pipe(parser);
 	});
-}
+};
+
 var fileMap = [
-	{'fName':'agency.txt','cName':'agency','uID':['agency_name']},
-	{'fName':'calendar.txt','cName':'calendar','uID':['service_id']},
-	{'fName':'calendar_dates.txt','cName':'calendar_dates','uID':['service_id']},
-	{'fName':'stops.txt','cName':'stops','uID':['stop_id']},
-	{'fName':'routes.txt','cName':'routes','uID':['route_id']},
-	{'fName':'trips.txt','cName':'trips','uID':['trip_id']},
-	{'fName':'stop_times.txt','cName':'stop_times','uID':['trip_id']},
-	{'fName':'fare_attributes.txt','cName':'fare_attributes','uID':['fare_id']},
-	{'fName':'fare_rules.txt','cName':'fare_rules','uID':['fare_id']},
-	{'fName':'shapes.txt','cName':'shapes','uID':['shape_id','shape_pt_sequence']},
-	{'fName':'frequencies.txt','cName':'frequencies','uID':['trip_id']},
-	{'fName':'transfers.txt','cName':'transfers','uID':['from_stop_id']},
-	{'fName':'feed_info.txt','cName':'feed_info','uID':['feed_publisher_name']}
-]
+	{
+	  fName: 'agency.txt',
+	  cName: 'agency',
+	  uID: ['agency_name']
+	},
+	{
+	  fName: 'calendar.txt',
+	  cName: 'calendar',
+	  uID: ['service_id']
+	},
+	{
+	  fName: 'calendar_dates.txt',
+	  cName: 'calendar_dates',
+	  uID: ['service_id']
+	},
+	{
+	  fName: 'stops.txt',
+	  cName: 'stops',
+	  uID: ['stop_id']
+	},
+	{
+	  fName: 'routes.txt',
+	  cName: 'routes',
+	  uID: ['route_id']
+	},
+	{
+	  fName: 'trips.txt',
+	  cName: 'trips',
+	  uID: ['trip_id']
+	},
+	{
+	  fName: 'stop_times.txt',
+	  cName: 'stop_times',
+	  uID: ['trip_id']
+	},
+	{
+	  fName: 'fare_attributes.txt',
+	  cName: 'fare_attributes',
+	  uID: ['fare_id']
+	},
+	{
+	  fName: 'fare_rules.txt',
+	  cName: 'fare_rules',
+	  uID: ['fare_id']
+	},
+	{
+	  fName: 'shapes.txt',
+	  cName: 'shapes',
+	  uID: ['shape_id', 'shape_pt_sequence']
+	},
+	{
+	  fName: 'frequencies.txt',
+	  cName: 'frequencies',
+	  uID: ['trip_id']
+	},
+	{
+	  fName: 'transfers.txt',
+	  cName: 'transfers',
+	  uID: ['from_stop_id']
+	},
+	{
+	  fName: 'feed_info.txt',
+	  cName: 'feed_info',
+	  uID: ['feed_publisher_name']
+	}
+];

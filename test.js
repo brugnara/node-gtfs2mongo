@@ -1,8 +1,6 @@
 var gtfs = require('./gtfs2mongo.js');
-gtfs.convert('data','mongodb://localhost:3001/meteor',function(err){
-	if(err){
-		console.log(err);
-	}
+gtfs.convert('data','mongodb://localhost:27017/tt',function(err) {
+	err && console.error(err);
 	process.exit();
 });
 /*
